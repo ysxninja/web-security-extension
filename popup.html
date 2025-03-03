@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Web Security Tools</title>
+  <style>
+    body { font-family: Arial, sans-serif; width: 300px; padding: 10px; }
+    .toggle-container { margin-bottom: 10px; }
+    .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto; position: relative; }
+    .copy-btn { position: absolute; top: 5px; right: 5px; cursor: pointer; background: #007bff; color: white; border: none; padding: 5px; border-radius: 3px; }
+    .highlight { border: 2px solid red !important; }
+  </style>
+</head>
+<body>
+  <h3>Web Security Tools</h3>
+  <div class="toggle-container">
+    <label><input type="checkbox" id="masterToggle"> Master Toggle (Enable All)</label>
+  </div>
+  <div class="toggle-container">
+    <label><input type="checkbox" id="toggleHidden"> Toggle Hidden Elements</label>
+  </div>
+  <div class="toggle-container">
+    <label><input type="checkbox" id="toggleDisabled"> Toggle Disabled Elements</label>
+  </div>
+  <button id="showWordlist">Show Wordlist</button>
+  <div class="card" id="wordlist"><button class="copy-btn" id="copyWordlist">Copy</button></div>
+  <button id="showEndpoints">Show Endpoints</button>
+  <div class="card" id="endpoints"><button class="copy-btn" id="copyEndpoints">Copy</button></div>
+  <button id="showInputFields">Show Input Fields</button>
+  <div class="card" id="inputFields"><button class="copy-btn" id="copyInputFields">Copy</button></div>
+  <button id="showSecurityEvents">Show Security Event Listeners</button>
+  <div class="card" id="securityEvents"><button class="copy-btn" id="copySecurityEvents">Copy</button></div>
+  <script src="popup.js"></script>
+</body>
+</html>

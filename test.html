@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Page for Web Security Extension</title>
+    <script>
+        // Hidden API calls in JavaScript
+        const apiUrl = "/api/v1/user/data";
+        fetch(apiUrl, { method: "GET" }).then(res => res.json()).then(console.log);
+        
+        // Event listener for postMessage
+        window.addEventListener("message", function(event) {
+            console.log("Received message:", event.data);
+        });
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        .hidden-element { display: none; }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .output {
+            background: #eef;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        .toggle-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-bottom: 5px;
+            border-radius: 3px;
+        }
+    </style>
+    <script>
+        function toggleOutput(id) {
+            const output = document.getElementById(id);
+            output.style.display = output.style.display === 'block' ? 'none' : 'block';
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Web Security Extension Test Page</h1>
+        
+        <h2>Hidden Elements</h2>
+        <div hidden>Hidden using the hidden attribute</div>
+        <div class="hidden-element">Hidden using CSS</div>
+        
+        <h2>Disabled Elements</h2>
+        <input type="text" disabled value="Disabled input field">
+        <button disabled>Disabled button</button>
+        
+        <h2>Input Fields</h2>
+        <input type="text" placeholder="Text input">
+        <textarea placeholder="Textarea input"></textarea>
+        <select>
+            <option>Option 1</option>
+            <option>Option 2</option>
+        </select>
+        
+        <h2>JavaScript API References</h2>
+        <script>
+            let endpoint = "/api/login";
+            let fetchData = () => fetch(endpoint, { method: "POST" }).then(res => res.text());
+        </script>
+        
+        <h2>PostMessage Event Listener</h2>
+        <button onclick="window.postMessage('Test Message', '*')">Send PostMessage</button>
+        
+        <h2>Event Listeners</h2>
+        <button class="toggle-btn" onclick="toggleOutput('eventListeners')">Toggle Event Listeners</button>
+        <div class="output" id="eventListeners">
+            <p>PostMessage event listener active. Check console for messages.</p>
+        </div>
+    </div>
+</body>
+</html>
