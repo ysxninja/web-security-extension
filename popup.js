@@ -4,6 +4,7 @@ async function getTabId() {
   return tab.id;
 }
 
+// Master Toggle
 document.getElementById("masterToggle").addEventListener("change", async (e) => {
   let checked = e.target.checked;
   document.getElementById("toggleHidden").checked = checked;
@@ -12,36 +13,40 @@ document.getElementById("masterToggle").addEventListener("change", async (e) => 
   await executeFunction(toggleDisabledElements, checked);
 });
 
+// Individual Toggles
 document.getElementById("toggleHidden").addEventListener("change", async (e) => {
-  let checked = e.target.checked;
-  await executeFunction(toggleHiddenElements, checked);
+  await executeFunction(toggleHiddenElements, e.target.checked);
 });
 
 document.getElementById("toggleDisabled").addEventListener("change", async (e) => {
-  let checked = e.target.checked;
-  await executeFunction(toggleDisabledElements, checked);
+  await executeFunction(toggleDisabledElements, e.target.checked);
 });
 
-document.getElementById("showWordlist").addEventListener("click", async () => {
-  let result = await executeFunction(extractWordlist);
-  document.getElementById("wordlist").innerText = result.join("\n");
-});
+// Extract and display results
+const setupButton = (btnId, outputId, copyBtnId, func, formatFunc = (x) => x) => {
+  document.getElementById(btnId).addEventListener("click", async () => {
+    let result = await executeFunction(func);
+    let outputDiv = document.getElementById(outputId);
+    let copyBtn = document.getElementById(copyBtnId);
 
-document.getElementById("showEndpoints").addEventListener("click", async () => {
-  let result = await executeFunction(extractEndpoints);
-  document.getElementById("endpoints").innerText = result.join("\n");
-});
+    if (result.length > 0) {
+      outputDiv.innerHTML = result.map(item => `<div class="output-item">${formatFunc(item)}</div>`).join("");
+      outputDiv.style.display = "block"; // Show the result card
+      copyBtn.style.display = "inline-block"; // Show the copy button
+    }
+  });
 
-document.getElementById("showInputFields").addEventListener("click", async () => {
-  let result = await executeFunction(extractInputFields);
-  document.getElementById("inputFields").innerText = result.join("\n");
-});
+  document.getElementById(copyBtnId).addEventListener("click", () => {
+    let text = document.getElementById(outputId).innerText;
+    navigator.clipboard.writeText(text);
+  });
+};
 
-document.getElementById("showSecurityEvents").addEventListener("click", async () => {
-  let result = await executeFunction(extractSecurityEvents);
-  document.getElementById("securityEvents").innerText = result.join("\n");
-});
+setupButton("showWordlist", "wordlist", "copyWordlist", extractWordlist);
+setupButton("showEndpoints", "endpoints", "copyEndpoints", extractEndpoints);
+setupButton("showInputFields", "inputFields", "copyInputFields", extractInputFields, (item) => item.replace(/</g, "&lt;").replace(/>/g, "&gt;")); // Escape HTML
 
+// Execute function in content script
 async function executeFunction(func, ...args) {
   let tabId = await getTabId();
   let [result] = await chrome.scripting.executeScript({
@@ -52,16 +57,17 @@ async function executeFunction(func, ...args) {
   return result.result;
 }
 
+// Modify elements styling
 function toggleHiddenElements(enable) {
   document.querySelectorAll('[hidden], [style*="display: none"]').forEach(el => {
     if (enable) {
-      el.classList.add("highlight");
       el.removeAttribute("hidden");
       el.style.display = "block";
+      el.style.outline = "2px solid lightcoral";
     } else {
-      el.classList.remove("highlight");
       el.setAttribute("hidden", "true");
       el.style.display = "none";
+      el.style.outline = "none";
     }
   });
 }
@@ -69,36 +75,27 @@ function toggleHiddenElements(enable) {
 function toggleDisabledElements(enable) {
   document.querySelectorAll('[disabled]').forEach(el => {
     if (enable) {
-      el.classList.add("highlight");
       el.removeAttribute("disabled");
+      el.style.outline = "2px solid lightcoral";
     } else {
-      el.classList.remove("highlight");
       el.setAttribute("disabled", "true");
+      el.style.outline = "none";
     }
   });
 }
 
+// Extract inputs (as text, not rendered elements)
 function extractInputFields() {
-  return Array.from(document.querySelectorAll("input, textarea, select"))
-    .map(el => el.outerHTML);
+  return Array.from(document.querySelectorAll("input, textarea, select")).map(el => el.outerHTML);
 }
 
-function extractSecurityEvents() {
-  const securityEvents = [];
-  document.querySelectorAll("*").forEach(el => {
-    let listeners = getEventListeners(el) || {};
-    if (listeners.message || listeners.postMessage) {
-      securityEvents.push({ element: el.outerHTML, events: Object.keys(listeners) });
-    }
-  });
-  return securityEvents.map(e => `${e.element} - Events: ${e.events.join(", ")}`);
-}
-
+// Extract words from page text
 function extractWordlist() {
   const words = document.documentElement.innerText.match(/[a-zA-Z_\-]+/g);
   return [...new Set(words)].sort();
 }
 
+// Extract API endpoints from scripts and HTML
 function extractEndpoints() {
   const regex = /(?<=(['"`]))\/[a-zA-Z0-9_?&=\/\-#.]*(?=\1)/g;
   const results = new Set();

@@ -3,15 +3,83 @@
 <head>
   <title>Web Security Tools</title>
   <style>
-    body { font-family: Arial, sans-serif; width: 300px; padding: 10px; }
-    .toggle-container { margin-bottom: 10px; }
-    .card { border: 1px solid #ccc; padding: 10px; margin-top: 10px; max-height: 200px; overflow: auto; position: relative; }
-    .copy-btn { position: absolute; top: 5px; right: 5px; cursor: pointer; background: #007bff; color: white; border: none; padding: 5px; border-radius: 3px; }
-    .highlight { border: 2px solid red !important; }
+    body { 
+      font-family: 'Arial', sans-serif; 
+      width: 320px; 
+      padding: 15px; 
+      background: #f4f7f9; 
+      color: #333;
+    }
+    h3 { 
+      margin-bottom: 15px; 
+      color: #007bff;
+      text-align: center;
+    }
+    .toggle-container { 
+      display: flex; 
+      align-items: center; 
+      background: white;
+      padding: 8px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .toggle-container label {
+      flex-grow: 1;
+      cursor: pointer;
+    }
+    .button-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    button {
+      flex-grow: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      background: #007bff;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover { background: #0056b3; }
+    .copy-btn {
+      display: none;
+      background: #28a745;
+      color: white;
+      padding: 8px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      border: none;
+    }
+    .copy-btn:hover { background: #218838; }
+    .card { 
+      background: white; 
+      padding: 10px; 
+      margin-top: 8px; 
+      border-radius: 6px; 
+      max-height: 200px; 
+      overflow-y: auto; 
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: none; 
+    }
+    .output-item {
+      padding: 5px;
+      border-bottom: 1px solid #ddd;
+      word-wrap: break-word;
+    }
+    .output-item:last-child {
+      border-bottom: none;
+    }
   </style>
 </head>
 <body>
+
   <h3>Web Security Tools</h3>
+
   <div class="toggle-container">
     <label><input type="checkbox" id="masterToggle"> Master Toggle (Enable All)</label>
   </div>
@@ -21,14 +89,25 @@
   <div class="toggle-container">
     <label><input type="checkbox" id="toggleDisabled"> Toggle Disabled Elements</label>
   </div>
-  <button id="showWordlist">Show Wordlist</button>
-  <div class="card" id="wordlist"><button class="copy-btn" id="copyWordlist">Copy</button></div>
-  <button id="showEndpoints">Show Endpoints</button>
-  <div class="card" id="endpoints"><button class="copy-btn" id="copyEndpoints">Copy</button></div>
-  <button id="showInputFields">Show Input Fields</button>
-  <div class="card" id="inputFields"><button class="copy-btn" id="copyInputFields">Copy</button></div>
-  <button id="showSecurityEvents">Show Security Event Listeners</button>
-  <div class="card" id="securityEvents"><button class="copy-btn" id="copySecurityEvents">Copy</button></div>
+
+  <div class="button-group">
+    <button id="showWordlist">Show Wordlist</button>
+    <button id="copyWordlist" class="copy-btn">Copy</button>
+  </div>
+  <div class="card" id="wordlist"></div>
+
+  <div class="button-group">
+    <button id="showEndpoints">Show Endpoints</button>
+    <button id="copyEndpoints" class="copy-btn">Copy</button>
+  </div>
+  <div class="card" id="endpoints"></div>
+
+  <div class="button-group">
+    <button id="showInputFields">Show Input Fields</button>
+    <button id="copyInputFields" class="copy-btn">Copy</button>
+  </div>
+  <div class="card" id="inputFields"></div>
+
   <script src="popup.js"></script>
 </body>
 </html>

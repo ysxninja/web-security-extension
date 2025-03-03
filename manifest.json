@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "Web Security Tools",
-  "version": "1.0",
-  "description": "Toggle hidden/disabled elements and extract wordlists & endpoints.",
+  "version": "1.3",
+  "description": "Toggle hidden/disabled elements and extract wordlists, endpoints, input fields, and security-relevant event listeners.",
   "permissions": ["activeTab", "scripting"],
   "host_permissions": ["<all_urls>"] ,
   "action": {
