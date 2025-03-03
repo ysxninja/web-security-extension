@@ -128,9 +128,24 @@ function extractWordlist() {
   return [...new Set(words)].sort();
 }
 
-function extractEndpoints() {
+async function extractEndpoints() {
   const regex = /(?<=(['"`]))\/[a-zA-Z0-9_?&=\/\-#.]*(?=\1)/g;
   const results = new Set();
+
+  // Scan inline HTML
   document.documentElement.outerHTML.matchAll(regex).forEach(match => results.add(match[0]));
+
+  // Scan external scripts
+  const scripts = document.querySelectorAll("script[src]");
+  await Promise.all([...scripts].map(async (script) => {
+    try {
+      const response = await fetch(script.src);
+      const text = await response.text();
+      text.matchAll(regex).forEach(match => results.add(match[0]));
+    } catch (error) {
+      console.log("Error fetching script:", script.src, error);
+    }
+  }));
+
   return Array.from(results);
 }
